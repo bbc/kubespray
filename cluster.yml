@@ -21,8 +21,7 @@
 
 - hosts: k8s-cluster:etcd:calico-rr
   any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
-  become: yes
-  gather_facts: true
+  gather_facts: false
   roles:
     - { role: kubespray-defaults}
     - { role: bootstrap-os, tags: bootstrap-os}
@@ -42,7 +41,6 @@
 
 - hosts: k8s-cluster:etcd:calico-rr
   any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
-  become: yes
   roles:
     - { role: kubespray-defaults}
     - { role: kubernetes/preinstall, tags: preinstall }
@@ -52,21 +50,18 @@
 
 - hosts: etcd
   any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
-  become: yes
   roles:
     - { role: kubespray-defaults}
     - { role: etcd, tags: etcd, etcd_cluster_setup: true, etcd_events_cluster_setup: "{{ etcd_events_cluster_enabled }}" }
 
 - hosts: k8s-cluster:calico-rr
   any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
-  become: yes
   roles:
     - { role: kubespray-defaults}
     - { role: etcd, tags: etcd, etcd_cluster_setup: false, etcd_events_cluster_setup: false }
 
 - hosts: k8s-cluster
   any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
-  become: yes
   roles:
     - { role: kubespray-defaults}
     - { role: kubernetes/node, tags: node }
@@ -74,7 +69,6 @@
 
 - hosts: kube-master
   any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
-  become: yes
   roles:
     - { role: kubespray-defaults}
     - { role: kubernetes/master, tags: master }
@@ -83,7 +77,6 @@
 
 - hosts: k8s-cluster
   any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
-  become: yes
   roles:
     - { role: kubespray-defaults}
     - { role: kubernetes/kubeadm, tags: kubeadm}
@@ -91,7 +84,6 @@
 
 - hosts: kube-master[0]
   any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
-  become: yes
   roles:
     - { role: kubespray-defaults}
     - { role: kubernetes-apps/rotate_tokens, tags: rotate_tokens, when: "secret_changed|default(false)" }
@@ -99,7 +91,6 @@
 
 - hosts: kube-master
   any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
-  become: yes
   roles:
     - { role: kubespray-defaults}
     - { role: kubernetes-apps/network_plugin, tags: network }
@@ -109,14 +100,12 @@
 
 - hosts: calico-rr
   any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
-  become: yes
   roles:
     - { role: kubespray-defaults}
     - { role: network_plugin/calico/rr, tags: network }
 
 - hosts: kube-master
   any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
-  become: yes
   roles:
     - { role: kubespray-defaults}
     - { role: kubernetes-apps, tags: apps }
@@ -124,7 +113,6 @@
 
 - hosts: k8s-cluster
   any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
-  become: yes
   roles:
     - { role: kubespray-defaults}
     - { role: kubernetes/preinstall, when: "dns_mode != 'none' and resolvconf_mode == 'host_resolvconf'", tags: resolvconf, dns_late: true }
