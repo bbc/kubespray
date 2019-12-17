@@ -25,7 +25,7 @@ docker_repo_key_info:
   pkg_key: apt_key
   url: '{{ docker_ubuntu_repo_gpgkey }}'
   repo_keys:
-    - {{ aptly_repo_key }}
+    - '{{ aptly_repo_key }}'
 
 docker_repo_info:
   pkg_repo: apt_repository
